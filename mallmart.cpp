@@ -5,43 +5,74 @@
 
 using namespace std;
 
-void createRevision(istream& fold, istream& fnew, ostream& frevision);
-bool revise(istream& fold, istream& frevision, ostream& fnew);
+void createRevision(istream &fold, istream &fnew, ostream &frevision)
+{
+    // Read in the entire contents of the old file into a string. Read the entire contents of the new file into another string.
+    string oldFile;
+    string newFile;
 
-int main() {
-    return 0;
-}
+    if (!fold)
+    {
+        cerr << "Error: Cannot open fold!" << endl;
+        return;
+    }
 
-// helpfer functions for creating revision file 
-bool getInt(istream& inf, int& n)
+    string foldLine;
+    while (getline(fold, foldLine))
+    {
+        oldFile += foldLine + "\n";
+    }
+
+    if (!fnew)
+    {
+        cerr << "Error: Cannot open fnew!" << endl;
+        return;
+    }
+    
+    string fnewLine;
+    while (getline(fnew, fnewLine))
+    {
+        newFile += fnewLine + "\n";
+    }
+
+    cout << oldFile;
+    cout << newFile;
+
+    // For all consecutive N-character sequences in the old file's string, insert that N-character sequence and the offset F where it was found in
+    // the old file's string, into a table (e.g. hash table or binary search tree). You might use 8 for N, or maybe 16
+};
+bool revise(istream &fold, istream &frevision, ostream &fnew);
+
+// helpfer functions for creating revision file
+bool getInt(istream &inf, int &n)
 {
     char ch;
-    if (!inf.get(ch)  ||  !isascii(ch)  ||  !isdigit(ch))
+    if (!inf.get(ch) || !isascii(ch) || !isdigit(ch))
         return false;
     inf.unget();
     inf >> n;
     return true;
 }
 
-bool getCommand(istream& inf, char& cmd, char& delim, int& length, int& offset)
+bool getCommand(istream &inf, char &cmd, char &delim, int &length, int &offset)
 {
     if (!inf.get(cmd))
     {
-        cmd = 'x';  // signals end of file
+        cmd = 'x'; // signals end of file
         return true;
     }
     switch (cmd)
     {
-        case '+':
-            return inf.get(delim).good();
-        case '#':
-        {
-            char ch;
-            return getInt(inf, offset) && inf.get(ch) && ch == ',' && getInt(inf, length);
-        }
-        case '\r':
-        case '\n':
-            return true;
+    case '+':
+        return inf.get(delim).good();
+    case '#':
+    {
+        char ch;
+        return getInt(inf, offset) && inf.get(ch) && ch == ',' && getInt(inf, length);
+    }
+    case '\r':
+    case '\n':
+        return true;
     }
     return false;
 }
@@ -50,3 +81,16 @@ bool getCommand(istream& inf, char& cmd, char& delim, int& length, int& offset)
 // frevision: an already-opened input source (the revision file)
 // fnew: an already-opened output destination to which you will write the file resulting from applying the revision file to the first input.
 
+int main() {
+
+    ifstream oldfile("old.txt");
+    ifstream newfile("new.txt");
+    ofstream outfile("output.txt");
+    createRevision(oldfile, newfile, outfile);
+
+
+    return 0;
+}
+
+// to create/compile:
+// g++ *.cpp -o mallmart && ./mallmart
