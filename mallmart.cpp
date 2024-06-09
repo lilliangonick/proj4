@@ -2,8 +2,15 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cassert>
+
+#include "Hashtable.h"
 
 using namespace std;
+
+#define N_LENGTH 8
+
+
 
 void createRevision(istream &fold, istream &fnew, ostream &frevision)
 {
@@ -28,18 +35,20 @@ void createRevision(istream &fold, istream &fnew, ostream &frevision)
         cerr << "Error: Cannot open fnew!" << endl;
         return;
     }
-    
+
     string fnewLine;
     while (getline(fnew, fnewLine))
     {
         newFile += fnewLine + "\n";
     }
 
-    cout << oldFile;
-    cout << newFile;
+    // cout << oldFile;
+    // cout << newFile;
 
     // For all consecutive N-character sequences in the old file's string, insert that N-character sequence and the offset F where it was found in
     // the old file's string, into a table (e.g. hash table or binary search tree). You might use 8 for N, or maybe 16
+    
+    
 };
 bool revise(istream &fold, istream &frevision, ostream &fnew);
 
@@ -81,14 +90,27 @@ bool getCommand(istream &inf, char &cmd, char &delim, int &length, int &offset)
 // frevision: an already-opened input source (the revision file)
 // fnew: an already-opened output destination to which you will write the file resulting from applying the revision file to the first input.
 
-int main() {
+void testHashtable()
+{
+    HashTable table(8);
+
+    table.insert("abc", 1005);
+    table.insert("lilly", 1);
+    assert((table.find("abc").second == 1005));
+    assert((table.find("lilly") == pair<string, int>("lilly", 1)));
+    assert((table.find("max") == pair<string, int>("", -1)));
+
+    cout << "ALL TESTS PASSED" << endl;
+}
+
+int main()
+{
 
     ifstream oldfile("old.txt");
     ifstream newfile("new.txt");
     ofstream outfile("output.txt");
     createRevision(oldfile, newfile, outfile);
-
-
+    testHashtable();
     return 0;
 }
 
